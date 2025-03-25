@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meil Observation Form</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .form-container {
+        background-color: #191c24;
+        border-radius: 10px;
+        padding: 20px;
+        width: 100%;
+        max-width: 400px;
+        color: #fff;
+      }
+      .form-control,
+      .form-select {
+        background-color: black !important;
+        color: white !important;
+        border: 1px solid #fff !important;
+      }
+      .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.5) !important;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        background-color: black !important;
+        color: white !important;
+        border-color: #fff !important;
+      }
+      /* Responsive adjustments */
+      @media (max-width: 576px) {
+        .form-container {
+          padding: 15px;
+        }
+        h6 {
+          font-size: 1.2rem;
+        }
+        .form-control,
+        .form-select,
+        .btn {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="col-sm-12 col-md-8 col-lg-6 col-xl-4">
+      <div class="form-container">
+        <h6 class="mb-4 text-center">Meil Observation Form</h6>
+        <form id="observationForm">
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingName"
+              placeholder="Name"
+              name="name"
+              required
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingDesignation"
+              placeholder="Designation"
+              name="designation"
+              required
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="date"
+              class="form-control"
+              id="floatingDate"
+              placeholder="Date"
+              name="date"
+              required
+              readonly
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingLocation"
+              placeholder="Location"
+              name="location"
+              required
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingResponsiblePerson"
+              placeholder="Responsible-Person"
+              name="responsiblePerson"
+              required
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="floatingObservation"
+              placeholder="Observation"
+              name="observation"
+              required
+            />
+          </div>
+          <div class="form-floating mb-3">
+            <select
+              class="form-select"
+              id="floatingSelect"
+              aria-label="Floating label select example"
+              name="option"
+              required
+            >
+              <option selected>Select</option>
+              <option value="U.A">U.A</option>
+              <option value="U.C">U.C</option>
+            </select>
+          </div>
+          <div class="form-floating mb-3">
+            <textarea
+              class="form-control"
+              placeholder="Corrective Action"
+              id="floatingTextarea"
+              style="height: 150px"
+              name="correctiveAction"
+              required
+            ></textarea>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Set the current date in the date field
+      document.getElementById("floatingDate").value = new Date()
+        .toISOString()
+        .split("T")[0];
+
+      // Handle form submission
+      document
+        .getElementById("observationForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault(); // Prevent the default form submission
+
+          // Gather form data
+          const formData = {
+            name: document.getElementById("floatingName").value,
+            designation: document.getElementById("floatingDesignation").value,
+            date: document.getElementById("floatingDate").value,
+            location: document.getElementById("floatingLocation").value,
+            responsiblePerson: document.getElementById(
+              "floatingResponsiblePerson"
+            ).value,
+            observation: document.getElementById("floatingObservation").value,
+            option: document.getElementById("floatingSelect").value,
+            correctiveAction: document.getElementById("floatingTextarea").value,
+            category: document.getElementById("floatingSelect").value, // Set category dynamically based on selected option
+          };
+
+          try {
+            // Send POST request to the API
+            const response = await fetch(
+              "http://localhost:5000/api/observations",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+              }
+            );
+
+            if (response.ok) {
+              alert("Form submitted successfully!");
+              // Optionally, reset the form after successful submission
+              document.getElementById("observationForm").reset();
+            } else {
+              const errorData = await response.json(); // Parse the error response
+              alert(`Failed to submit form: ${errorData.error}`);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("An error occurred. Please try again.");
+          }
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
